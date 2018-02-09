@@ -1,11 +1,9 @@
-provider "aws" {
-  region = "us-east-1"
+module "data" {
+  source  = "./data"
 }
 
-data "aws_caller_identity" "current" {}
-
-output "account_id" {
-  value = "${data.aws_caller_identity.current.account_id}"
+provider "aws" {
+  region = "us-east-1"
 }
 
 resource "aws_dynamodb_table" "dynamodb-terraform-lock" {

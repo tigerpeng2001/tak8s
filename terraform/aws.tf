@@ -1,5 +1,5 @@
 provider "aws" {
-region = "us-east-1"
+  region = "us-east-1"
 }
 
 data "aws_caller_identity" "current" {}
@@ -9,19 +9,19 @@ output "account_id" {
 }
 
 resource "aws_dynamodb_table" "dynamodb-terraform-lock" {
-   name = "terraform-lock"
-   hash_key = "LockID"
-   read_capacity = 20
-   write_capacity = 20
+  name           = "terraform-lock"
+  hash_key       = "LockID"
+  read_capacity  = 20
+  write_capacity = 20
 
-   attribute {
-      name = "LockID"
-      type = "S"
-   }
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
 
-   tags {
-     Name = "Terraform Lock Table"
-   }
+  tags {
+    Name = "Terraform Lock Table"
+  }
 }
 
 resource "aws_s3_bucket" "tfstate" {
@@ -33,12 +33,13 @@ resource "aws_s3_bucket" "tfstate" {
     Environment = "Sandbox"
   }
 }
-#terraform {
-#  backend "s3" {
-#    bucket = "sandbox-ahanet-terraform-tfstate"
-#    region = "us-east-1"
-#    key = "ec2-example/terraform.tfstate"
-#    dynamodb_table = "terraform-lock"
-#    encrypt = true
-#  }
-#}
+
+terraform {
+  backend "s3" {
+    bucket         = "sandbox-terraform-tfstate"
+    region         = "us-east-1"
+    key            = "tak8s/terraform.tfstate"
+    dynamodb_table = "terraform-lock"
+    encrypt        = true
+  }
+}

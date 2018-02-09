@@ -9,5 +9,7 @@
 # Module directory
 .terraform/
 
+plan.out
+
 ### Terraform Patch ###
 *.tfvars

@@ -1,5 +1,5 @@
 module "data" {
-  source  = "./data"
+  source = "./data"
 }
 
 provider "aws" {

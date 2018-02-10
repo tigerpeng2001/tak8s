@@ -2,6 +2,37 @@ variable vpc_cidr {
   default = "10.89.64.0/24"
 }
 
+# prepare for deploy into multiple zone for HA
+variable zones {
+  description = "one or more zones to deploy the cluster"
+  type        = "list"
+  default     = ["a", "b"]
+
+  #default    = ["a", "b", "c"]
+}
+
+variable public_subnet_cidr {
+  description = "one or more zones to deploy the cluster"
+  type        = "map"
+
+  default = {
+    "a" = "10.89.64.0/27"
+    "b" = "10.89.64.32/27"
+    "c" = "10.89.64.64/27"
+  }
+}
+
+variable private_subnet_cidr {
+  description = "one or more zones to deploy the cluster"
+  type        = "map"
+
+  default = {
+    "a" = "10.89.64.128/27"
+    "b" = "10.89.64.160/27"
+    "c" = "10.89.64.192/27"
+  }
+}
+
 variable vpc_name {
   default = "tak8s"
 }

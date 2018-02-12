@@ -29,9 +29,9 @@ resource "aws_vpc_dhcp_options_association" "dns_resolver" {
   dhcp_options_id = "${aws_vpc_dhcp_options.dns_resolver.id}"
 }
 
-##########                                                                       
-# Keypair                                                                        
-##########                                                                       
+##########
+# Keypair
+##########
 
 resource "aws_key_pair" "default_keypair" {
   key_name   = "${var.default_keypair_name}"
@@ -43,7 +43,7 @@ resource "aws_key_pair" "default_keypair" {
 ############
 
 # Subnet (public)
-resource "aws_subnet" "kubernetes" {
+resource "aws_subnet" "kubernetes_pub" {
   count             = "${length(var.zones)}"
   vpc_id            = "${aws_vpc.kubernetes.id}"
   cidr_block        = "${var.vpc_cidr}"
@@ -51,7 +51,45 @@ resource "aws_subnet" "kubernetes" {
   availability_zone = "${module.data.region}${element(var.zones,count.index)}"
 
   tags {
-    Name     = "tak8s-public-${element(var.zones,count.index)}"
+    Name     = "${var.vpc_name}-public-${element(var.zones,count.index)}"
     Modifier = "${module.data.caller_arn}"
   }
+}
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = "${aws_vpc.kubernetes.id}"
+
+  tags {
+    Name     = "${var.vpc_name}-igw-${element(var.zones,count.index)}"
+    Modifier = "${module.data.caller_arn}"
+  }
+}
+
+############
+## Routing
+############
+
+resource "aws_route_table" "kubernetes" {
+  count  = "${length(var.zones)}"
+  vpc_id = "${aws_vpc.kubernetes.id}"
+
+  # Default route through Internet Gateway
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.gw.id}"
+  }
+
+  tags {
+    Name     = "${var.vpc_name}-igw-${element(var.zones,count.index)}"
+    Modifier = "${module.data.caller_arn}"
+  }
+}
+
+resource "aws_route_table_association" "kubernetes" {
+  #  count             = "${length(var.zones)}" 
+  #  subnet_id = "${aws_subnet.kubernetes["${count.index}"].id}"
+  #  route_table_id = "${aws_route_table.kubernetes["${count.index}"].id}"
+  subnet_id = "${aws_subnet.kubernetes.id[0]}"
+
+  route_table_id = "${aws_route_table.kubernetes.id[0]}"
 }

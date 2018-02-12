@@ -1,3 +1,7 @@
+variable project {
+  default = "tak8s"
+}
+
 variable vpc_cidr {
   default = "10.89.64.0/24"
 }
@@ -6,11 +10,13 @@ variable vpc_cidr {
 variable zones {
   description = "one or more zones to deploy the cluster"
   type        = "list"
-  default     = ["a", "b"]
+  default     = ["a"]
 
-  #default    = ["a", "b", "c"]
+  #default     = ["a", "b"]
+  #default     = ["a", "b", "c"]
 }
 
+# hardcoded here, may use funciont to calculate
 variable public_subnet_cidr {
   description = "one or more zones to deploy the cluster"
   type        = "map"

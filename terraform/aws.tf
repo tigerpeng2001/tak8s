@@ -3,7 +3,7 @@ module "data" {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "${var.region}"
 }
 
 terraform {
@@ -14,8 +14,9 @@ terraform {
     #key            = "${var.project}/terraform.tfstate"
     bucket = "terraform-states-630527842429-us-east-1"
 
-    region         = "us-east-1"
-    key            = "tak8s/terraform.tfstate"
+    region = "us-east-1"
+    key    = "tak8s/terraform.tfstate"
+
     dynamodb_table = "terraform-lock"
     encrypt        = true
   }

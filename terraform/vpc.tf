@@ -43,10 +43,9 @@ resource "aws_key_pair" "default_keypair" {
 ############
 
 # Subnet (public)
-resource "aws_subnet" "kubernetes_pub" {
+resource "aws_subnet" "kubernetes" {
   count             = "${length(var.zones)}"
   vpc_id            = "${aws_vpc.kubernetes.id}"
-  cidr_block        = "${var.vpc_cidr}"
   cidr_block        = "${var.public_subnet_cidr["${element(var.zones,count.index)}"]}"
   availability_zone = "${module.data.region}${element(var.zones,count.index)}"
 
@@ -86,10 +85,7 @@ resource "aws_route_table" "kubernetes" {
 }
 
 resource "aws_route_table_association" "kubernetes" {
-  #  count             = "${length(var.zones)}" 
-  #  subnet_id = "${aws_subnet.kubernetes["${count.index}"].id}"
-  #  route_table_id = "${aws_route_table.kubernetes["${count.index}"].id}"
-  subnet_id = "${aws_subnet.kubernetes.id[0]}"
-
-  route_table_id = "${aws_route_table.kubernetes.id[0]}"
+  count          = "${length(var.zones)}"
+  subnet_id      = "${aws_subnet.kubernetes.id}"
+  route_table_id = "${aws_route_table.kubernetes.id}"
 }

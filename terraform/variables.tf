@@ -2,11 +2,16 @@ variable project {
   default = "tak8s"
 }
 
+variable region {
+  description = "AWS Rgion where the resources deployed to"
+}
+
 variable vpc_cidr {
   default = "10.89.64.0/24"
 }
 
 # prepare for deploy into multiple zone for HA
+# there is issue to aws_route_table_association multiple zone????
 variable zones {
   description = "one or more zones to deploy the cluster"
   type        = "list"
